@@ -157,12 +157,42 @@ PRODUCT_PACKAGES += \
     libaudio-resampler
 
 PRODUCT_PROPERTY_OVERRIDES += \
+    ro.audio.monitorRotation=true
+
+# Missing build.props that are present in factory image
+PRODUCT_PROPERTY_OVERRIDES += \
+    fmas.spkr_6ch=35,20,110 \
+    fmas.spkr_2ch=35,25 \
+    fmas.spkr_angles=10 \
+    fmas.spkr_sgain=0 \
     media.aac_51_output_enabled=true \
+    persist.rcs.supported=0 \
     persist.audio.dualmic.config=endfire \
     persist.audio.fluence.voicecall=true \
     persist.audio.fluence.voicerec=false \
     persist.audio.fluence.speaker=false \
-    ro.audio.monitorRotation=true
+    persist.radio.sib16_support=1 \
+    persist.data.qmi.adb_logmask=0 \
+    ro.facelock.black_timeout=400 \
+    ro.facelock.det_timeout=1500 \
+    ro.facelock.rec_timeout=250 \
+    ro.facelock.lively_timeout=2500 \
+    ro.facelock.est_max_time=600 \
+    ro.facelock.use_intro_anim=false \
+    ro.error.receiver.system.apps=com.google.android.gms
+
+# never dexopt the MotoSignature
+$(call add-product-dex-preopt-module-config,MotoSignatureApp,disable)
+
+# Include IMSEnabler
+PRODUCT_PACKAGES += \
+    IMSEnabler
+
+# WiFi Calling
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.data.iwlan.enable=true \
+    persist.radio.ignore_ims_wlan=1 \
+    persist.radio.data_con_rprt=1
 
 # Audio effects
 PRODUCT_PACKAGES += \
@@ -229,7 +259,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # WiFi calling
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.data.iwlan.enable=true \
-    persist.radio.ignore_ims_wlan=1 \
+    persist.radio.no_wait_for_card=1
     persist.radio.data_con_rprt=1
 
 # Rich Communications Service is disabled in 5.1
@@ -345,25 +375,11 @@ endif
 # Enable for volte call
 AUDIO_FEATURE_ENABLED_MULTI_VOICE_SESSIONS := true
 
-PRODUCT_PROPERTY_OVERRIDES += \
-   ro.hwui.texture_cache_size=72 \
-   ro.hwui.layer_cache_size=48 \
-   ro.hwui.r_buffer_cache_size=8 \
-   ro.hwui.path_cache_size=32 \
-   ro.hwui.gradient_cache_size=1 \
-   ro.hwui.drop_shadow_cache_size=6 \
-   ro.hwui.texture_cache_flushrate=0.4 \
-   ro.hwui.text_small_cache_width=1024 \
-   ro.hwui.text_small_cache_height=1024 \
-   ro.hwui.text_large_cache_width=2048 \
-   ro.hwui.text_large_cache_height=1024
-
-
-PRODUCT_PROPERTY_OVERRIDES += \
-   dalvik.vm.heapgrowthlimit=256m
+# configure the HWUI memory limits
+$(call inherit-product, frameworks/native/build/phone-xxhdpi-3072-hwui-memory.mk)
 
 # setup dalvik vm configs.
-$(call inherit-product, frameworks/native/build/phone-xhdpi-2048-dalvik-heap.mk)
+$(call inherit-product, frameworks/native/build/phone-xxhdpi-3072-dalvik-heap.mk)
 
 $(call inherit-product-if-exists, hardware/qcom/msm8x84/msm8x84.mk)
 $(call inherit-product-if-exists, vendor/qcom/gpu/msm8x84/msm8x84-gpu-vendor.mk)

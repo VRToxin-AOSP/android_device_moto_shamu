@@ -20,14 +20,10 @@ TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_VARIANT := krait
 
-TARGET_NO_BOOTLOADER := true
-
 # Inline kernel building
-TARGET_KERNEL_CONFIG := shamu_defconfig
-TARGET_KERNEL_SOURCE := kernel/moto/shamu
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
-KERNEL_TOOLCHAIN_PREFIX := arm-eabi-
-KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/arm/arm-eabi-4.8/bin
+TARGET_KERNEL_CONFIG := despair_defconfig
+TARGET_KERNEL_SOURCE := kernel/moto/shamu
 
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE :=  2048
@@ -91,11 +87,11 @@ TARGET_USES_ION := true
 TARGET_HW_DISK_ENCRYPTION := false
 TARGET_CRYPTFS_HW_PATH := device/moto/shamu/cryptfs_hw
 
-# Enable dex-preoptimization to speed up first boot sequence
+# Enable dex-preoptimization to speed up first boot sequence (Default disabled)
 ifeq ($(HOST_OS),linux)
   ifeq ($(TARGET_BUILD_VARIANT),user)
     ifeq ($(WITH_DEXPREOPT),)
-      WITH_DEXPREOPT := true
+      WITH_DEXPREOPT := false
     endif
   endif
 endif
@@ -138,5 +134,17 @@ BOARD_HAL_STATIC_LIBRARIES := libdumpstate.shamu
 
 # Include an expanded selection of fonts
 EXTENDED_FONT_FOOTPRINT := true
+
+# VRToxin build flags
+VRTOXIN_BLOCK_BUILD := false
+TARGET_GCC_VERSION_EXP := 4.9
+TARGET_GCC_VERSION_ARM := 4.9
+STRICT_ALIASING := true
+CLANG_O3 := true
+ENABLE_GCCONLY := true
+GRAPHITE_OPTS := true
+USE_PIPE := false
+KRAIT_TUNINGS := true
+TARGET_NO_BOOTLOADER := true
 
 -include vendor/moto/shamu/BoardConfigVendor.mk
